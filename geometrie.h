@@ -11,4 +11,9 @@
 
 #include <iostream>
 
+class sommet {
+    public :
+    double x,y;
+};
+
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__geometrie__) */
