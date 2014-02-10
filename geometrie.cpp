@@ -52,9 +52,9 @@ vecteur& vecteur::operator= (const vecteur& s){
     // Affichage
 
 std::ostream& operator <<(std::ostream & out,const vecteur & s){
-    out<< "(" << s.pts[0];
+    out<< "(" << round_to_0(s.pts[0],EPSILON);
     for (int i=1; i<s.dim; i++) {
-        out << "," << s.pts[i];
+        out << "," << round_to_0(s.pts[i],EPSILON);
     };
     out<< ")";
     return out;
@@ -256,4 +256,9 @@ segment::segment(const sommet& s1,const sommet& s2){
 std::ostream& operator <<(std::ostream & out,const segment & s){
     out<< "S1 : " << s.S1 <<" S2 : "<< s.S2 << " n : "<< s.n << "\n";
     return out;
+};
+
+double round_to_0 (double d ,double eps){
+    if (std::abs(d)<eps) return 0;
+    else return d;
 }

@@ -10,9 +10,11 @@
 #define __Projet_Xcode___Planification_de_trajectoire__geometrie__
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
-const double PI= 3.1415926;
+
+const double PI= 3.141592653589793238462643383279;
+const double EPSILON = 1.e-12;
 
 class vecteur;
 typedef vecteur sommet;
@@ -70,10 +72,12 @@ class segment {
     public :
     sommet S1,S2;
     vecteur n;
-    segment(const sommet& s1,const sommet& s2);
+    segment(const sommet& s1=sommet(),const sommet& s2=sommet());
 // AFFICHAGE
     friend std::ostream& operator <<(std::ostream &,const segment &);
 };
+
+double round_to_0 (double d ,double eps=EPSILON);
 
 
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__geometrie__) */

@@ -29,10 +29,12 @@ int main(int argc, const char * argv[])
     
     std::cout << "Test de scene\n";
     
-    polygone poly(4);
+    polygone poly(4,vecteur(2,0),2);
     for (int i =0; i<4; i++) {
         std::cout << poly.segments[i];
     };
+    
+    std::cout << EPSILON;
     
     
     return 0;
