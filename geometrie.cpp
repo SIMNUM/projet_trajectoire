@@ -29,7 +29,7 @@ sommet::sommet(double x,double y){
     pts[0] = x;pts[1] = y;
 }
 sommet::sommet(double x,double y,double z){
-    dim=2;
+    dim=3;
     pts = new double[3];
     pts[0] = x;pts[1] = y;pts[2]=z;
 }
