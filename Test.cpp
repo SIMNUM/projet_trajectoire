@@ -7,7 +7,7 @@
 //
 
 #include <iostream>
-#include "geometrie.h"
+#include "scene.h"
 
 
 int main(int argc, const char * argv[])
@@ -26,6 +26,15 @@ int main(int argc, const char * argv[])
     std::cout << rotation_d2(vecteur(1 ,0), PI/2);
     
     std::cout << "\n" << segment(sommet(0,0),sommet(1,0));
+    
+    std::cout << "Test de scene\n";
+    
+    polygone poly(4);
+    for (int i =0; i<4; i++) {
+        std::cout << poly.segments[i];
+    };
+    
+    
     return 0;
     
 }
