@@ -21,7 +21,7 @@ polygone padding_cercle(polygone P, double r, unsigned int n=8)
     {
         tab.push_back(seg1.S2+r*seg.n);
         seg2=P.segments[i];
-        angle=acos(ps(seg1.n,seg2.n);
+        double angle=acos(ps(seg1.n,seg2.n);
         double xi, yi;
         double cst=(2*r*sin(angle/(2*(n-1))))/sin(angle/(n-1));
         double theta;
