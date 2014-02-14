@@ -86,5 +86,19 @@ std::ostream& operator <<(std::ostream & out,const polygone & poly){
     return out;
 };
 
+    /* SCENE : ECRITURE DANS UN FICHIER */
+
+void scene::exporte(string titre){
+    
+    ofstream fichier(titre.c_str(), ios::out |ios::trunc);  // on ouvre le fichier en lecture et écriture, tout en supprimant tout fichier existant qui aurait le même type
+    
+    if(fichier)  // si l'ouverture a réussi
+    {
+        // instructions
+        fichier.close();  // on ferme le fichier
+    }
+    else  // sinon
+        std::cout << "Impossible d'ouvrir le fichier !" << endl;
+}
 
 

@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include "geometrie.h"
 
 using namespace std;
@@ -41,6 +42,13 @@ public:
     sommet départ;
     sommet objectif;
     vector<polygone> obstacles;
+    
+    // ECRITURE DANS UN FICHIER
+    void exporte(string titre);
+    
+    // LECTURE D'UN FICHIER
+    void importe(string titre);
+    
     
 };
 
