@@ -81,6 +81,15 @@ vecteur::vecteur(const sommet& s1,const sommet& s2){
     }
 }
 
+    // Ecriture
+
+void vecteur::print_fichier(std::ostream& out){
+    for (int i=0; i<dim; i++){
+        out << pts[i] << " ";
+    }
+    out << "\n";
+}
+
     // Combinaisons linéaires
 
 vecteur & vecteur::operator+=(const vecteur & v){
@@ -277,4 +286,12 @@ std::ostream& operator <<(std::ostream & out,const segment & s){
 double round_to_0 (double d ,double eps){
     if (std::abs(d)<eps) return 0;
     else return d;
+}
+
+    // Ecriture
+
+void segment::print_fichier(std::ostream& out){
+    out << "# Segment\n";
+    S1.print_fichier(out);
+    S2.print_fichier(out);
 }

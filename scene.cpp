@@ -8,7 +8,7 @@
 
 #include "scene.h"
 
-    /* CONSTRUCTEURS */
+    /* POLYGONE : CONSTRUCTEURS */
 
 polygone::polygone(int n,const vecteur& v,double d){
     nb_sommet = n;
@@ -75,7 +75,7 @@ void polygone::remplissage_segm(){
 };
 
 
-    /* AFFICHAGE */
+    /* POLYGONE : AFFICHAGE */
 
 std::ostream& operator <<(std::ostream & out,const polygone & poly){
     for (int i=1; i<= poly.nb_sommet; i++) {
@@ -86,6 +86,17 @@ std::ostream& operator <<(std::ostream & out,const polygone & poly){
     return out;
 };
 
+    /* POLYGONE : ECRITURE */
+
+void polygone::print_fichier(std::ostream& out){
+    out << "# Polygone \n";
+    out << "# Nombre de sommets\n";
+    out << nb_sommet << "\n";
+    for (int i=0; i<nb_sommet; i++) {
+        sommets[i].print_fichier(out);
+    }
+};
+
     /* SCENE : ECRITURE DANS UN FICHIER */
 
 void scene::exporte(string titre){
@@ -94,8 +105,19 @@ void scene::exporte(string titre){
     
     if(fichier)  // si l'ouverture a réussi
     {
-        // instructions
+        fichier << "##  FICHIER DE SCENE \n";
+        fichier << "# Point de Départ \n";
+        depart.print_fichier(fichier);
+        fichier << "# Point d'Objectif \n";
+        objectif.print_fichier(fichier);
+        fichier << "# Nombre d'obstacles \n";
+        fichier << nb_obstacle << "\n";
+        for (int i=0; i<nb_obstacle; i++) {
+            obstacles[i].print_fichier(fichier);
+        }
+        fichier << "END";
         fichier.close();  // on ferme le fichier
+        std::cout << "L'écriture a du bien se passer" << endl;
     }
     else  // sinon
         std::cout << "Impossible d'ouvrir le fichier !" << endl;

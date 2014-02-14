@@ -34,12 +34,14 @@ public:
     
     // AFFICHAGE
     friend std::ostream& operator <<(std::ostream &,const polygone &);
+    // ECRITURE
+    void print_fichier(std::ostream&);
 };
 
 class scene {
 public:
     int nb_obstacle;
-    sommet départ;
+    sommet depart;
     sommet objectif;
     vector<polygone> obstacles;
     

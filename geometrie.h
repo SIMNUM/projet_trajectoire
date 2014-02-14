@@ -34,6 +34,8 @@ class vecteur {
 // AFFICHAGE
     friend std::ostream& operator <<(std::ostream &,const vecteur &);
     void print();
+// ECRITURE
+    void print_fichier(std::ostream&);
 // COMBINAISONS LINEAIRES
     vecteur & operator +=(const vecteur & v);
     vecteur & operator +=(const double);
@@ -77,6 +79,8 @@ class segment {
     segment(const sommet& s1=sommet(),const sommet& s2=sommet());
 // AFFICHAGE
     friend std::ostream& operator <<(std::ostream &,const segment &);
+// ECRITURE
+    void print_fichier(std::ostream&);
 };
 
 double round_to_0 (double d ,double eps=EPSILON);
