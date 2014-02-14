@@ -8,6 +8,8 @@
 
 #include "scene.h"
 
+    /* CONSTRUCTEURS */
+
 polygone::polygone(int n,const vecteur& v,double d){
     nb_sommet = n;
     sommets.resize(n);
@@ -20,3 +22,69 @@ polygone::polygone(int n,const vecteur& v,double d){
     }
     segments[n-1]=segment(sommets[n-1], sommets[0]);
 }
+
+polygone::polygone(const vector<sommet>& soms){
+    nb_sommet = int(soms.size());
+    sommets.resize(nb_sommet);
+    segments.resize(nb_sommet);
+    
+    sommets[0] = soms[0];
+    for (int i=1; i<nb_sommet; i++) {
+        sommets[i] = soms[i];
+        segments[i-1]=segment(sommets[i-1], sommets[i]);
+    }
+    segments[nb_sommet-1]=segment(sommets[nb_sommet-1], sommets[0]);
+
+}
+
+
+void polygone::transformation_poly(const vecteur& v,double dill ,double theta){
+    
+    // Calcul du centre de gravité translaté
+    sommet G = sommets[0];
+    for (int i=1; i<nb_sommet; i++) {
+        G+=sommets[i];
+    };
+    G/=nb_sommet;
+    G += v;
+    
+    //Translation et Dillatation
+    for (int i=0; i<nb_sommet; i++) {
+        sommets[i] +=v;
+        sommets[i] = dillatation(G, sommets[i], dill);
+    };
+    
+    // Rotation
+    if (sommets[0].dim==2) {
+        for (int i=0; i<nb_sommet; i++) {
+            sommets[i] = rotation_d2(vecteur(G,sommets[i]), theta);
+        }
+    }
+    else {
+        // Créer une rotation 3d
+    }
+    // Remplissage des segments
+    remplissage_segm();
+};
+
+void polygone::remplissage_segm(){
+    for (int i=1; i<nb_sommet; i++) {
+        segments[i-1]=segment(sommets[i-1], sommets[i]);
+    }
+    segments[nb_sommet-1]=segment(sommets[nb_sommet-1], sommets[0]);
+};
+
+
+    /* AFFICHAGE */
+
+std::ostream& operator <<(std::ostream & out,const polygone & poly){
+    for (int i=1; i<= poly.nb_sommet; i++) {
+        out<< "Segment " << i << "\n";
+        out<< poly.segments[i-1];
+    };
+    
+    return out;
+};
+
+
+

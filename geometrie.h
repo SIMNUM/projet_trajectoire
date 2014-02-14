@@ -66,6 +66,8 @@ vecteur operator /(const vecteur &,const double & lambda);
 double ps ( const vecteur & ,const vecteur &);
 double norm (const vecteur & v);
 vecteur rotation_d2 (const vecteur& v, double theta);
+sommet translation (const vecteur& v, const sommet& s);
+sommet dillatation (const sommet& centre, const sommet& s,double dill);
 
 
 class segment {

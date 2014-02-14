@@ -36,6 +36,28 @@ int main(int argc, const char * argv[])
     
     std::cout << EPSILON;
     
+    // Test de Translation et dilatation
+//    
+//    sommet S(1,1);
+//    vecteur v(0,1);
+//    
+//    std::cout << translation(v, S);
+    
+    poly.transformation_poly(vecteur(-2,0), 2, PI/4);
+    for (int i =0; i<4; i++) {
+        std::cout << poly.segments[i];
+    };
+    
+    std::cout << poly;
+    
+    vector<sommet> vectsom;
+    vectsom.resize(3);
+    vectsom[0]=sommet(1,0);
+    vectsom[1]=sommet(0,3);
+    vectsom[2]=sommet(0,-2);
+    
+    std::cout << polygone(vectsom);
+    
     
     return 0;
     

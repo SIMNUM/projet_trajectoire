@@ -240,6 +240,22 @@ vecteur rotation_d2 (const vecteur& v, double theta){
     }
 }
 
+sommet translation (const vecteur& v, const sommet& s){
+    sommet res = s;
+    res += v;
+    return res;
+    
+};
+
+sommet dillatation (const sommet& centre, const sommet& s,double dill){
+    sommet res = centre;
+    vecteur v(centre, s);
+    v *= dill;
+    res = translation(v, centre);
+    return res;
+};
+
+
 /* FONCTIONS DE LA CLASSE SEGMENT */
 
     // Constructeurs

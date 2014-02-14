@@ -25,10 +25,25 @@ public:
     // CONSTRUCTEUR
 // Polygone régulier, centre ve, n >=3cotés,
     polygone(int n=4,const vecteur& v =vecteur(),double d=1.);
+    // A partir d'une liste de points
+    polygone(const vector<sommet>&);
+    // Translation, dillatation, rotation par rapport au centre de gravité du polygone
+    void transformation_poly(const vecteur&,double dill ,double theta);
+    void remplissage_segm();
     
-    
-    
+    // AFFICHAGE
+    friend std::ostream& operator <<(std::ostream &,const polygone &);
+};
+
+class scene {
+public:
+    int nb_obstacle;
+    sommet départ;
+    sommet objectif;
+    vector<polygone> obstacles;
     
 };
+
+
 
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__scene__) */
