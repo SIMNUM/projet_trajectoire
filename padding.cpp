@@ -1,6 +1,5 @@
 
-#include "scene.h"
-#include "geometrie.h"
+
 #include "padding.h"
 
 //---------------------------------------------------------------
@@ -12,20 +11,21 @@
 // la fonction padding_cercle prend en argument un polygone "P"
 //et le rayon "r" de l'objet  et génére le nouveau polygone
 // "pad" avec une couche de padding
-polygone padding_cercle(polygone P, double r, unsigned int n=8)
+
+polygone padding_cercle(polygone P, double r, unsigned int n)
 {
-    vector<sommet> tab; //faut-il donner la taille pour éviter les resize
-    seg1=P.segments[0];
+    vector<sommet> tab(n*P.nb_sommet); //faut-il donner la taille pour éviter les resize
+    segment seg1=P.segments[0];
     tab.push_back(seg1.S1+r*seg1.n);
     for(int i=1; i<P.nb_sommet; i++)
     {
-        tab.push_back(seg1.S2+r*seg.n);
-        seg2=P.segments[i];
-        double angle=acos(ps(seg1.n,seg2.n);
+        tab.push_back(seg1.S2+r*seg1.n);
+        segment seg2=P.segments[i];
+        double angle=acos(ps(seg1.n,seg2.n));
         double xi, yi;
         double cst=(2*r*sin(angle/(2*(n-1))))/sin(angle/(n-1));
         double theta;
-        for(int j=1; j<n; j++)
+        for(unsigned int j=1; j<n; j++)
         {
             xi=cst*cos(angle*(j+0.5)/(n-1));
             yi=xi=cst*sin(angle*(j+0.5)/(n-1));
