@@ -15,6 +15,18 @@ void initialise(double** dist, int dim){
     }
 }
 
+std::ostream & operator <<(std::ostream & out,const graphe &gra){
+    out <<"Matrice\n";
+    for (int i=0; i<gra.dim; i++) {
+        for (int j=0; j<gra.dim; j++) {
+            out<<gra.dist[i][j]<<"  ";
+        }
+        out<<"\n";
+    }
+    return out;
+}
+
+
 graphe::graphe(const graphe& gra){
     dim = gra.dim;
     initialise(dist, dim);
@@ -26,25 +38,34 @@ graphe::graphe(const graphe& gra){
 }
 
 
-                       
-bool intersection (const sommet& A,const vecteur& v,const segment& cd){
+
+bool intersection (const sommet& A,const sommet& B,const segment& cd){
+    vecteur v(A,B);
     sommet projection(A);
     vecteur AC(A, cd.S1);
     vecteur CD(cd.S1, cd.S2);
     if (std::abs(ps(v, cd.n))<EPSILON) return false;
-    else{
-    double lambda = ps(AC, cd.n)/ps(v, cd.n);
-    projection += lambda*v;
-    double CDpCP =ps(CD, vecteur(cd.S1, projection));
-        return ((CDpCP>-EPSILON)&&(CDpCP<(norm(CD)*norm(CD))));
+    else
+    {
+        double lambda = ps(AC, cd.n)/ps(v, cd.n);
+        if ((lambda > -EPSILON)&&(lambda<1+EPSILON))
+        {
+            projection += lambda*v;
+            double CDpCP =ps(CD, vecteur(cd.S1, projection));
+            return ((CDpCP>-EPSILON)&&(CDpCP<(norm(CD)*norm(CD))));
+        }
+        else return(false);
     }
 }
 
-bool intersection_totale(const scene& scn, const sommet& source, const sommet& arrivee){
+bool intersection_totale(const scene& scn, const sommet& source,int som_o,int som_p, const sommet& arrivee,int arr_o, int arr_p){
     for (int i=0; i<scn.nb_obstacle; i++) {
         for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
-            if (intersection(source, vecteur(source, arrivee), scn.obstacles[i].segments[j])) {
-                return true;
+            int n =scn.obstacles[i].nb_sommet;
+            if ((i!=som_o&&j!=som_p)||(i!=arr_o&&j!=arr_p)||(i!=som_o&&j!=(som_p+1)%n)||(i!=arr_o&&j!=(arr_p+1)%n)) {
+                if (intersection(source, arrivee, scn.obstacles[i].segments[j])) {
+                    return true;
+                }
             }
         }
     }
@@ -60,22 +81,25 @@ int calcule_dimension (const scene& scn){
 };
 
 
-bool accessible_sur_soimeme(const scene& scn, const polygone& p,int i,int s){
+bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i,int s){
     if (i==s) return true;
     vecteur SI(p.sommets[s],p.sommets[i]);
     int n = p.nb_sommet;
-    return((!intersection_totale(scn, p.sommets[s],p.sommets[i]))&&((ps(SI, vecteur(p.segments[(s-1+n)%n].n))>-EPSILON)||((ps(SI, vecteur(p.segments[s].n))>-EPSILON))));
+    return((!intersection_totale(scn, p.sommets[s],numpol,s,p.sommets[i],numpol,i))&&((ps(SI, vecteur(p.segments[(s-1+n)%n].n))>-EPSILON)||((ps(SI, vecteur(p.segments[s].n))>-EPSILON))));
     
 }
 
-bool accessible_sur_autre(const scene& scn,const polygone p,int i,const sommet s){
-    return(!intersection_totale(scn,s,p.sommets[i]));
+bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_o,int s_p){
+    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i));
 }
 
 
 graphe::graphe(const scene& scn){
     dim = calcule_dimension(scn);
-    initialise(dist, dim);
+    dist = new double*[dim];
+    for (int i=0; i<dim; i++) {
+        dist[i] = new double[dim];
+    }
     int position=0;
     
     /* Remplissage du point source*/
@@ -84,7 +108,7 @@ graphe::graphe(const scene& scn){
         // Polygones
     for (int i=0; i<scn.nb_obstacle; i++) {
         for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
-            if (accessible_sur_autre(scn, scn.obstacles[i], j, scn.depart)) {
+            if (accessible_sur_autre(scn, scn.obstacles[i],i, j, scn.depart,-1,-1)) {
                 dist[0][position+j]=norm(vecteur(scn.depart, scn.obstacles[i].sommets[j]));
                 dist[position+j][0]=dist[0][position+j];
             }
@@ -96,7 +120,7 @@ graphe::graphe(const scene& scn){
         position +=scn.obstacles[i].nb_sommet;
     }
         // Point d'arrivée
-    if (intersection_totale(scn, scn.depart, scn.objectif)) {
+    if (!intersection_totale(scn, scn.depart,-1,-1, scn.objectif,-1,-1)) {
         dist[0][dim-1] = norm(vecteur(scn.depart, scn.objectif));
         dist[dim-1][0] =dist[0][dim-1];
     }
@@ -110,10 +134,46 @@ graphe::graphe(const scene& scn){
     for (int k=0; k<scn.nb_obstacle; k++) {
         for (int l=0; l<scn.obstacles[k].nb_sommet; l++) {
             int positioninter = position;
+            dist[positioninter+l][positioninter+l]=0;
             // Replissage de sois même
-            
+            for (int j=l+1; j<scn.obstacles[k].nb_sommet; j++) {
+                if (accessible_sur_soimeme(scn, scn.obstacles[k],k, j, l)) {
+                    dist[position+l][positioninter+j]=norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[k].sommets[j]));
+                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                }
+                else{
+                    dist[position+l][positioninter+j]=MaxInt;
+                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                };
+            }
+            // Remplissage du reste
+            positioninter += scn.obstacles[k].nb_sommet;
+            for (int i=k+1; i<scn.nb_obstacle; i++){
+                for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
+                if (accessible_sur_autre(scn, scn.obstacles[i],i, j, scn.obstacles[k].sommets[l],k,l)) {
+                    dist[position+l][positioninter+j]=norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[i].sommets[j]));
+                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                }
+                else {
+                    dist[position+l][positioninter+j]=MaxInt;
+                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                }
+            }
+            positioninter +=scn.obstacles[i].nb_sommet;
+            }
+            // Remplissage du dernier point (Point d'arrivée)
+            if (!intersection_totale(scn, scn.obstacles[k].sommets[l],k,l, scn.objectif,-1,-1)) {
+                dist[position+l][dim-1] = norm(vecteur(scn.obstacles[k].sommets[l], scn.objectif));
+                dist[dim-1][position+l] =dist[position+l][dim-1];
+            }
+            else{
+                dist[position+l][dim-1] = MaxInt;
+                dist[dim-1][position+l] =dist[position+l][dim-1];
+            }
             
         }
+        position +=scn.obstacles[k].nb_sommet;
     }
     
 }
+
