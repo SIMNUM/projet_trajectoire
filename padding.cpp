@@ -14,7 +14,7 @@
 
 polygone padding_cercle(const polygone& P, double r, unsigned int n)
 {
-    vector<sommet> tab(n*P.nb_sommet); //faut-il donner la taille pour éviter les resize
+    vector<sommet> tab(n*P.nb_sommet); //on connait d'emblee la taille finale du vecteur-> evite des resize
     segment seg1=P.segments[0];
     tab.push_back(seg1.S1+r*seg1.n);
     for(int i=1; i<P.nb_sommet; i++)
