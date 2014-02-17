@@ -3,6 +3,6 @@
 
 #include "scene.h"
 
-polygone padding_cercle(polygone P, double r, unsigned int n=8);
+polygone padding_cercle(const polygone&  P, double r, unsigned int n=8);
 
 #endif // PADDING_H_INCLUDED

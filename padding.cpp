@@ -12,7 +12,7 @@
 //et le rayon "r" de l'objet  et génére le nouveau polygone
 // "pad" avec une couche de padding
 
-polygone padding_cercle(polygone P, double r, unsigned int n)
+polygone padding_cercle(const polygone& P, double r, unsigned int n)
 {
     vector<sommet> tab(n*P.nb_sommet); //faut-il donner la taille pour éviter les resize
     segment seg1=P.segments[0];

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "scene.h"
+#include "padding.h"
 
 
 int main(int argc, const char * argv[])
@@ -65,7 +66,8 @@ int main(int argc, const char * argv[])
     essais.depart = sommet(-5,0);
     essais.objectif = sommet(0,5);
     essais.obstacles.resize(3);
-    essais.obstacles[0] = polygone(4,vecteur(2,0),1);
+    essais.obstacles[0] = padding_cercle(polygone(4,vecteur(2,0),1), 0.5);
+    polygone(4,vecteur(2,0),1);
     essais.obstacles[1] = polygone(3,vecteur(-2,0),1);
     essais.obstacles[2] = polygone(6,vecteur(0,1),1);
     
