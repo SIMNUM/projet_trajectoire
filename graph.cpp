@@ -62,7 +62,13 @@ bool intersection_totale(const scene& scn, const sommet& source,int som_o,int so
     for (int i=0; i<scn.nb_obstacle; i++) {
         for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
             int n =scn.obstacles[i].nb_sommet;
-            if ((i!=som_o&&j!=som_p)||(i!=arr_o&&j!=arr_p)||(i!=som_o&&j!=(som_p+1)%n)||(i!=arr_o&&j!=(arr_p+1)%n)) {
+            if (
+                !(((i==som_o)&&(j==som_p))
+                ||((i==arr_o)&&(j==arr_p))
+                ||((i==som_o)&&(j==(som_p-1+n)%n))
+                ||((i==arr_o)&&(j==(arr_p-1+n)%n)))
+                )
+            {
                 if (intersection(source, arrivee, scn.obstacles[i].segments[j])) {
                     return true;
                 }

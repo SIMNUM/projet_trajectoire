@@ -53,24 +53,25 @@ int main(int argc, const char * argv[])
     std::cout << poly;
     
     vector<sommet> vectsom;
-    vectsom.resize(3);
-    vectsom[0]=sommet(1,0);
-    vectsom[1]=sommet(0,3);
-    vectsom[2]=sommet(0,-2);
+    vectsom.resize(4);
+    vectsom[0]=sommet(-5,0);
+    vectsom[1]=sommet(-6,-1);
+    vectsom[2]=sommet(-4,0);
+    vectsom[3]=sommet(-6,1);
     
     std::cout << polygone(vectsom);
     
     // TEST DE SCENE
     
     scene essais;
-    essais.nb_obstacle=3;
-    essais.depart = sommet(-5,0);
-    essais.objectif = sommet(0,5);
-    essais.obstacles.resize(3);
+    essais.nb_obstacle=4;
+    essais.depart = sommet(-8,0);
+    essais.objectif = sommet(5,0);
+    essais.obstacles.resize(4);
     essais.obstacles[0] = polygone(4,vecteur(2,0),1);
-    polygone(4,vecteur(2,0),1);
     essais.obstacles[1] = polygone(3,vecteur(-2,0),1);
     essais.obstacles[2] = polygone(6,vecteur(0,1),1);
+    essais.obstacles[3] = polygone(vectsom);
     
     essais.exporte("scene1.txt");
     
@@ -79,7 +80,10 @@ int main(int argc, const char * argv[])
     sommet P(0,0);
     segment Bloc(sommet(1,1),sommet(1,-1));
     vecteur v(1,2);
-    if (intersection(P, sommet(1,0), Bloc)) std::cout <<"Ca marche";
+    
+    if (intersection_totale(essais, essais.depart, -1, -1, essais.obstacles[3].sommets[3], 3, 3)) std::cout <<"ca intersercte alors que ça devrait pas \n";
+    
+    if (intersection( essais.depart, essais.obstacles[3].sommets[3],essais.obstacles[3].segments[3])) std::cout <<"ca intersercteCP";
     
     
     
