@@ -234,6 +234,10 @@ double norm (const vecteur & v){
     return (sqrt(ps(v,v)));
 }
 
+double det_d2(const vecteur & v1, const vecteur & v2){
+    return (v1.pts[0]*v2.pts[1]-v1.pts[1]*v2.pts[2]);
+}
+
 vecteur rotation_d2 (const vecteur& v, double theta){
     vecteur vec(v);
     if (v.dim!=2) {
