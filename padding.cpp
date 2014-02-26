@@ -1,5 +1,4 @@
 
-
 #include "padding.h"
 
 //---------------------------------------------------------------
@@ -67,7 +66,7 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
         {//angle "entrant" dans le polygone (non convexe)
             vecteur v=vecteur(seg1.S1,seg1.S2)-vecteur(seg2.S1,seg2.S2);
             v=v/norm(v);
-            sommet S=seg1.S2+2*r*sin(angle/2)*v;
+            sommet S=seg1.S2-2*r*sin(angle/2)*v;
             tab.push_back(S);
         }
         else
@@ -81,7 +80,7 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
                 xi=cst*cos(angle*(j+0.5)/(n-1));
                 yi=cst*sin(angle*(j+0.5)/(n-1));
                 sommet S(xi,yi);
-                //on fait un changement de repère
+                //on fait un changement de repï¿½re
                 theta=acos(ps(seg1.n,vecteur(1,0)));
                 if(seg1.n.pts[1]<0){theta=-theta;};
                 S=rotation_d2(S,theta);
@@ -96,7 +95,7 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
 
 //PADDING pour un objet circulaire  de rayon r
 // la fonction padding_cercle prend en argument un polygone "P"
-//et le rayon "r" de l'objet  et génére le nouveau polygone
+//et le rayon "r" de l'objet  et gï¿½nï¿½re le nouveau polygone
 // "pad" avec une couche de padding
 
 polygone  padding_cercle(const polygone& P, double r, unsigned int n)
