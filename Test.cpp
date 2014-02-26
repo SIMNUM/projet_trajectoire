@@ -74,8 +74,14 @@ int main(int argc, const char * argv[])
     essais.obstacles[3] = padding_cercle(polygone(vectsom));
     
     essais.exporte("scene1.txt");
+    graphe Gra(essais);
+    std::cout << Gra;
+    int* sollu = new int[Gra.dim];
+    calcule_chemin(Gra, sollu);
+    for (int i=0; i<Gra.dim; i++) {
+        std::cout << sollu[i] << " --> " << i <<"\n";
+    };
     
-    std::cout << graphe(essais);
     
     sommet P(0,0);
     segment Bloc(sommet(1,1),sommet(1,-1));
@@ -86,6 +92,21 @@ int main(int argc, const char * argv[])
     if (intersection( essais.depart, essais.obstacles[3].sommets[3],essais.obstacles[3].segments[3])) std::cout <<"ca intersercteCP";
     
     
+
+    scene essais2;
+    essais2.nb_obstacle=1;
+    essais2.depart = sommet(-2,0);
+    essais2.objectif = sommet(2,0);
+    essais2.obstacles.resize(1);
+    essais2.obstacles[0] = polygone(6,vecteur(0,0.2),1);
+    
+    graphe G(essais2);
+    std::cout << G;
+    int* sol = new int[G.dim];
+    calcule_chemin(G, sol);
+    for (int i=0; i<G.dim; i++) {
+        std::cout << sol[i] << " --> " << i <<"\n";
+    };
     
     
     return 0;

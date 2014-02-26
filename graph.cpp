@@ -183,3 +183,53 @@ graphe::graphe(const scene& scn){
     
 }
 
+
+void calcule_chemin (const graphe& graph, int* solution ){
+    
+    /* INITIALISATION */
+    // On intialise un vecteur "longueur" avec la première colonne de la matrice de graphe
+    double* longueur = new double[graph.dim];
+    //solution = new int[graph.dim];
+    for (int i =0; i<graph.dim; i++) {
+        longueur[i] = graph.dist[0][i];
+        solution[i] = 0;
+    }
+    
+    // On initialise deux ensembles de sommets S et T
+    bool* S=new bool[graph.dim];
+    bool* T=new bool[graph.dim];
+    S[0] = true; T[0] = false;
+    for (int i=1; i<graph.dim; i++) {
+        S[i] = false;
+        T[i] = true;
+    }
+    
+    /* ITERATION */
+    
+    for (int action = 1; action < graph.dim; action++) {
+        int i = minimum(longueur, T, graph.dim);
+        T[i] = false; S[i] = true;
+        for (int j=0; j<graph.dim; j++) {
+            if (j!=i) {
+                if (longueur[j]>(longueur[i]+graph.dist[i][j])) {
+                    longueur[j] =longueur[i]+graph.dist[i][j];
+                    solution[j]=i;
+                }
+            }
+        }
+    }
+
+}
+
+int minimum (const double* liste,const bool* T, int n){
+    int min = 0;
+    while (!T[min]&&(min<n)) {
+        min++;
+    }
+    
+    for (int i=(min+1); i<n; i++) {
+        if ((liste[i]<liste[min])&&T[i])
+            min = i;
+    }
+    return min;
+}

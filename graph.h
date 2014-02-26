@@ -26,6 +26,8 @@ public:
     
 };
 
+/* FONCTIONS INTERMEDIAIRES pour construire un graphe à partir d'une scène */
+
 // Savoir si un segment est sur le chemin d'une trajectoire (point plus vecteur)
 bool intersection (const sommet&,const sommet&,const segment&);
 
@@ -40,9 +42,14 @@ void initialise(double** dist, int dim);
 // Vérifie si le sommet i est accessible par le sommet s d'un même polygone
 bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i,int s);
 
-// Vérifie si le sommet i du polygone p est accessible depuis le sommet s
-bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int,int);
+// Vérifie si le sommet i du polygone p est accessible depuis le sommet s (du polygone [int], numéro [int])
+bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_p,int s_n);
 
+/* CALCUL DU CHEMIN */
+// Calcule le chemin
+void calcule_chemin (const graphe&, int*);
 
+// minimum partiel
+int minimum (const double*,const bool*,int);
 
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__graph__) */
