@@ -233,3 +233,66 @@ int minimum (const double* liste,const bool* T, int n){
     }
     return min;
 }
+
+int* liste_sommet (int* brut,int n){
+    int compteur=0;
+    int intermediaire = n-1;
+    while (brut[intermediaire]!=0&&compteur<n) {
+        intermediaire=brut[intermediaire];
+        compteur++;
+    }
+    compteur++;
+    int* retraite = new int[compteur+1];
+    std::cout << compteur<< "\n";
+    intermediaire = n-1;
+    for (int i=0; i<compteur+1; i++) {
+        retraite[compteur+1-i]=intermediaire;
+        intermediaire=brut[intermediaire];
+    }
+    retraite[0] = compteur+1;
+    return retraite;
+}
+
+void cherche_coord( int nb_som,int dim, int& poly,int& som,int num,const scene& scn){
+    if (num==0||num==dim) {
+        poly=-1;
+        som=-1;
+    }
+    else{
+        poly=0;
+        som =num;
+        while (scn.obstacles[poly].nb_sommet>=som) {
+            som -= scn.obstacles[poly].nb_sommet;
+            poly++;
+        }
+    }
+}
+
+void ajoute_au_fichier(int* sol,int dim, class scene& scn, string titre){
+    
+
+    ofstream fichier(titre.c_str(), ios::out |ios::trunc);  // on ouvre le fichier en lecture et écriture, tout en supprimant tout fichier existant qui aurait le même type
+    
+    if(fichier)  // si l'ouverture a réussi
+    {
+        fichier << "##  LISTE DES SOMMETS SOLUTIONS \n";
+        fichier << "# Nombre de sommets\n";
+        fichier << sol[0] << "\n";
+        scn.depart.print_fichier(fichier);
+        
+        for (int i=2; i<sol[0]; i++) {
+            int poly,som;
+            cherche_coord(sol[0], dim, poly, som, sol[i], scn);
+            scn.obstacles[poly].sommets[som].print_fichier(fichier);
+        }
+        scn.objectif.print_fichier(fichier);
+
+        
+        fichier << "END";
+        fichier.close();  // on ferme le fichier
+        std::cout << "L'écriture a du bien se passer" << endl;
+    }
+    else  // sinon
+        std::cout << "Impossible d'ouvrir le fichier !" << endl;
+
+}

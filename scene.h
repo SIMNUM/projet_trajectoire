@@ -13,6 +13,7 @@
 #include <vector>
 #include <fstream>
 #include "geometrie.h"
+#include "graph.h"
 
 using namespace std;
 

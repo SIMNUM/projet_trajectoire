@@ -46,10 +46,18 @@ bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i
 bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_p,int s_n);
 
 /* CALCUL DU CHEMIN */
-// Calcule le chemin
+
+// Calcule le chemin : Donne le vecteur des predecesseur
 void calcule_chemin (const graphe&, int*);
 
 // minimum partiel
 int minimum (const double*,const bool*,int);
 
+// Retraite une liste des prédécesseurs en un tableau de sommets consécutifs, le premier étant le nombre de sommets de la chaine, le deuxième 0, et le dernier la sortie
+int* liste_sommet (int* brut,int n);
+
+void cherche_coord(int nb_som, int dim, int& poly,int& som,int num,const scene& scn);
+
+// Ajoute a un fichier Texte la liste des sommets
+void ajoute_au_fichier(int* sol,int dim, class scene& scn, string titre);
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__graph__) */

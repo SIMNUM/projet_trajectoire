@@ -115,6 +115,7 @@ void scene::exporte(string titre){
         for (int i=0; i<nb_obstacle; i++) {
             obstacles[i].print_fichier(fichier);
         }
+        
         fichier << "END";
         fichier.close();  // on ferme le fichier
         std::cout << "L'écriture a du bien se passer" << endl;

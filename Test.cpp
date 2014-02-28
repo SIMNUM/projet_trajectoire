@@ -68,10 +68,10 @@ int main(int argc, const char * argv[])
     essais.depart = sommet(-8,0);
     essais.objectif = sommet(5,0);
     essais.obstacles.resize(4);
-    essais.obstacles[0] = padding_cercle(polygone(4,vecteur(2,0),1));
+    essais.obstacles[0] = padding_cercle(polygone(4,vecteur(2,0),1),0.5);
     essais.obstacles[1] = polygone(3,vecteur(-2,0),1);
     essais.obstacles[2] = polygone(6,vecteur(0,1),1);
-    essais.obstacles[3] = padding_cercle(polygone(vectsom));
+    essais.obstacles[3] = padding_cercle(polygone(vectsom),0.5);
     
     essais.exporte("scene1.txt");
     graphe Gra(essais);
@@ -104,8 +104,10 @@ int main(int argc, const char * argv[])
     std::cout << G;
     int* sol = new int[G.dim];
     calcule_chemin(G, sol);
+    int* res;
+    res=liste_sommet(sol, G.dim);
     for (int i=0; i<G.dim; i++) {
-        std::cout << sol[i] << " --> " << i <<"\n";
+        std::cout << sol[i] << " --> " << i << "+" << res[i]<< "\n";
     };
     
     
