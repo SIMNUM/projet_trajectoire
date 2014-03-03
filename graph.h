@@ -11,6 +11,10 @@
 
 #include <iostream>
 #include "scene.h"
+#include <fstream>
+#include <string>
+using namespace std;
+
 
 const double MaxInt = 1E+37;
 
@@ -59,5 +63,5 @@ int* liste_sommet (int* brut,int n);
 void cherche_coord(int nb_som, int dim, int& poly,int& som,int num,const scene& scn);
 
 // Ajoute a un fichier Texte la liste des sommets
-void ajoute_au_fichier(int* sol,int dim, class scene& scn, string titre);
+void ajoute_au_fichier(int* sol,int dim, scene& scn, string titre);
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__graph__) */

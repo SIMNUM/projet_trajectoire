@@ -8,6 +8,7 @@
 
 #include "graph.h"
 
+
 void initialise(double** dist, int dim){
     dist = new double*[dim];
     for (int i=0; i<dim; i++) {
@@ -268,10 +269,10 @@ void cherche_coord( int nb_som,int dim, int& poly,int& som,int num,const scene& 
     }
 }
 
-void ajoute_au_fichier(int* sol,int dim, class scene& scn, string titre){
+void ajoute_au_fichier(int* sol,int dim, scene& scn, string titre){
     
 
-    ofstream fichier(titre.c_str(), ios::out |ios::trunc);  // on ouvre le fichier en lecture et écriture, tout en supprimant tout fichier existant qui aurait le même type
+    ofstream fichier(titre.c_str(), ios::out |ios::app);  // on ouvre le fichier en lecture et écriture, tout en supprimant tout fichier existant qui aurait le même type
     
     if(fichier)  // si l'ouverture a réussi
     {
