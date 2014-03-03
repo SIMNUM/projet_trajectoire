@@ -13,7 +13,7 @@
 #include <vector>
 #include <fstream>
 #include "geometrie.h"
-#include "graph.h"
+
 
 using namespace std;
 
@@ -36,7 +36,7 @@ public:
     // AFFICHAGE
     friend std::ostream& operator <<(std::ostream &,const polygone &);
     // ECRITURE
-    void print_fichier(std::ostream&);
+    void print_fichier(std::ostream&) const;
 };
 
 class scene {

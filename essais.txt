@@ -1,0 +1,24 @@
+##  FICHIER DE SCENE 
+# Point de Départ 
+-2 0 
+# Point d'Objectif 
+2 0 
+# Nombre d'obstacles 
+1
+# Polygone 
+# Nombre de sommets
+6
+1 0.2 
+0.5 1.06603 
+-0.5 1.06603 
+-1 0.2 
+-0.5 -0.666025 
+0.5 -0.666025 
+##  LISTE DES SOMMETS SOLUTIONS 
+# Nombre de sommets
+4
+-2 0 
+-0.5 -0.666025 
+0.5 -0.666025 
+2 0 
+END

@@ -83,7 +83,7 @@ vecteur::vecteur(const sommet& s1,const sommet& s2){
 
     // Ecriture
 
-void vecteur::print_fichier(std::ostream& out){
+void vecteur::print_fichier(std::ostream& out) const{
     for (int i=0; i<dim; i++){
         out << pts[i] << " ";
     }
@@ -294,7 +294,7 @@ double round_to_0 (double d ,double eps){
 
     // Ecriture
 
-void segment::print_fichier(std::ostream& out){
+void segment::print_fichier(std::ostream& out) const{
     out << "# Segment\n";
     S1.print_fichier(out);
     S2.print_fichier(out);

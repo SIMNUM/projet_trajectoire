@@ -261,15 +261,18 @@ void cherche_coord( int nb_som,int dim, int& poly,int& som,int num,const scene& 
     }
     else{
         poly=0;
-        som =num;
-        while (scn.obstacles[poly].nb_sommet>=som) {
+        som =num-1;
+        while ((scn.obstacles[poly].nb_sommet)<=som&&poly<scn.nb_obstacle) {
             som -= scn.obstacles[poly].nb_sommet;
             poly++;
+        }
+        if (poly==scn.nb_obstacle) {
+            poly--;
         }
     }
 }
 
-void ajoute_au_fichier(int* sol,int dim, scene& scn, string titre){
+void ajoute_au_fichier(int* sol,int dim,const scene& scn, string titre){
     
 
     ofstream fichier(titre.c_str(), ios::out |ios::app);  // on ouvre le fichier en lecture et écriture, tout en supprimant tout fichier existant qui aurait le même type

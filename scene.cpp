@@ -88,7 +88,7 @@ std::ostream& operator <<(std::ostream & out,const polygone & poly){
 
     /* POLYGONE : ECRITURE */
 
-void polygone::print_fichier(std::ostream& out){
+void polygone::print_fichier(std::ostream& out) const{
     out << "# Polygone \n";
     out << "# Nombre de sommets\n";
     out << nb_sommet << "\n";
@@ -116,7 +116,6 @@ void scene::exporte(string titre){
             obstacles[i].print_fichier(fichier);
         }
         
-        fichier << "END";
         fichier.close();  // on ferme le fichier
         std::cout << "L'écriture a du bien se passer" << endl;
     }

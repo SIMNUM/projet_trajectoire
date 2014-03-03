@@ -109,6 +109,8 @@ int main(int argc, const char * argv[])
     for (int i=0; i<G.dim; i++) {
         std::cout << sol[i] << " --> " << i << "+" << res[i]<< "\n";
     };
+    essais2.exporte("essais.txt");
+    ajoute_au_fichier(res, G.dim, essais2, "essais.txt");
     
     
     return 0;

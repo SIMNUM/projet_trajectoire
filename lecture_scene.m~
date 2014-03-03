@@ -23,7 +23,7 @@ taillechemin = str2num(lisligne(fid));
 Chemin = zeros(taillechemin,2);
 
 for i=1:taillechemin
-    Chemin(i,:) = str2num(lisligne(fid));
+    Chemin(i) = str2num(lisligne(fid));
 end
 
 
@@ -31,7 +31,7 @@ hold on
 for k=1:nbpoly
     fill(Poly{k}(:,1),Poly{k}(:,2),'r');
 end
-plot(Chemin(:,1),Chemin(:,2));
+
 hold off
 
     
