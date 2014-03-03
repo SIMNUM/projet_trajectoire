@@ -96,6 +96,9 @@ bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i
     
 }
 
+// ATTENTION, C'est ici qu'il faut modifier quelque chose : il faut que accessible sur autre prenne en compte qu'on ne puisse pas traverser le polygone du point source : s'inspirer de la fonction du haut.
+// Ca permet d'éviter que deux polygones ne se recoupent. Et que ça merde en conséquent.
+
 bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_o,int s_p){
     return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i));
 }
@@ -299,4 +302,36 @@ void ajoute_au_fichier(int* sol,int dim,const scene& scn, string titre){
     else  // sinon
         std::cout << "Impossible d'ouvrir le fichier !" << endl;
 
+}
+
+void calcule_le_plus_court_chemin (scene& scn, string titre){
+    
+    graphe G(scn);
+    scn.exporte(titre);
+    
+    int* sol = new int[G.dim];
+    calcule_chemin(G, sol);
+    int* res;
+    res=liste_sommet(sol, G.dim);
+    
+    ajoute_au_fichier(res, G.dim, scn, titre);
+}
+
+void calcule_le_plus_court_chemin_padding_cercle (scene scn, string titre,double rayon){
+    
+    // On exporte
+    scn.exporte(titre);
+    
+    // On padding
+    for (int i=0; i<scn.nb_obstacle; i++) {
+        scn.obstacles[i]= padding_cercle(scn.obstacles[i], rayon);
+    }
+    
+    graphe G(scn);
+    int* sol = new int[G.dim];
+    calcule_chemin(G, sol);
+    int* res;
+    res=liste_sommet(sol, G.dim);
+    ajoute_au_fichier(res, G.dim, scn, titre);
+    
 }

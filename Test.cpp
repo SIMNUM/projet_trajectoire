@@ -71,16 +71,17 @@ int main(int argc, const char * argv[])
     essais.obstacles[0] = padding_cercle(polygone(4,vecteur(2,0),1),0.5);
     essais.obstacles[1] = polygone(3,vecteur(-2,0),1);
     essais.obstacles[2] = polygone(6,vecteur(0,1),1);
-    essais.obstacles[3] = padding_cercle(polygone(vectsom),0.5);
+    essais.obstacles[3] = polygone(vectsom);
+
     
-    essais.exporte("scene1.txt");
+    
     graphe Gra(essais);
-    std::cout << Gra;
-    int* sollu = new int[Gra.dim];
-    calcule_chemin(Gra, sollu);
-    for (int i=0; i<Gra.dim; i++) {
-        std::cout << sollu[i] << " --> " << i <<"\n";
-    };
+    int* sol2 = new int[Gra.dim];
+    calcule_chemin(Gra, sol2);
+    int* res2;
+    res2=liste_sommet(sol2, Gra.dim);
+    essais.exporte("scene.txt");
+    ajoute_au_fichier(res2, Gra.dim, essais, "scene.txt");
     
     
     sommet P(0,0);

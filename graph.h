@@ -13,6 +13,7 @@
 #include "scene.h"
 #include <fstream>
 #include <string>
+#include "padding.h"
 
 using namespace std;
 
@@ -66,3 +67,9 @@ void cherche_coord(int nb_som, int dim, int& poly,int& som,int num,const scene& 
 // Ajoute a un fichier Texte la liste des sommets
 void ajoute_au_fichier(int* sol,int dim,const scene& scn, string titre);
 #endif /* defined(__Projet_Xcode___Planification_de_trajectoire__graph__) */
+
+/* FONCTION FINALE, PREND UNE SCENE, ET LA TRANSFORME EN .txt */
+
+void calcule_le_plus_court_chemin (scene& scn, string titre);
+
+void calcule_le_plus_court_chemin_padding_cercle ( scene scn, string titre,double rayon);
