@@ -1,3 +1,5 @@
+
+
 #include "padding.h"
 
 
@@ -17,8 +19,31 @@ int nb_change_sign(double x1,double x2,double y1,double y2)
     return res;
 };
 
+//calcul la distance entre le segment seg et le vecteur pt
+double distance_pt_segment(segment seg, sommet pt)
+{
+  const double l2 = norm(seg.S1-seg.S2)*norm(seg.S1-seg.S2);  //longueur du segment
+  if (l2 == 0.0) return norm(seg.S1-pt);   // v == w case
+  // On trouve la projection du point pt sur la droite
+  const double t = ps(pt - seg.S1, seg.S2 - seg.S1) / l2;
+  if (t < 0.0) return norm(pt-seg.S1);       // la projection tombe au delà de S1
+  else if (t > 1.0) return norm(pt-seg.S2);  // la projection tombe au delà de S2
+  // Projection appartient au segment
+  return abs(ps(seg.n,vecteur(seg.S1,pt)));
+};
 
 
+double distance_pt_polygone(polygone p, sommet pt)
+{
+    double aux;
+    double res=numeric_limits<double>::max();
+    for(int i=0; i<p.nb_sommet; i++)
+    {
+       aux=distance_pt_segment(p.segments[i],pt);
+       if(aux<res) res=aux;
+    }
+    return res;
+};
 //---------------------------------------------------------------
 //-----------------PADDING---------------------------------------
 //---------------------------------------------------------------
@@ -75,9 +100,8 @@ polygone arc_cercle_ext(double angle,double r,unsigned int n)
     return pad;
 };*/
 
-void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, unsigned int n)
+void padding_sommet(const polygone &P, segment seg1, segment seg2,vector<sommet> & tab, double r, unsigned int n)
 {
-
         double angle=acos(ps(seg1.n,seg2.n));
         if (debug) cout<<"angle="<<angle*360/PI<<endl;
         if(angle<EPSILON) return ;
@@ -88,7 +112,7 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
             double L=r/tan((PI-angle)/2);
             if (debug) cout<<"angle alpha="<<(PI-angle)*360/PI<<endl;
             sommet S=seg1.S2+r*seg1.n+L*v;
-            tab.push_back(S);
+            if (distance_pt_polygone(P,S)>(r-EPSILON) && det_d2(seg2.S2-seg1.S1, S-seg1.S1)>0) tab.push_back(S);
             if (debug)
             {
                 cout<<"pour le segment :"<<seg1<<endl;
@@ -101,7 +125,8 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
             double xi, yi;
             double cst=(2*r*sin(angle/(2*(n-1))))/sin(angle/(n-1));
             double theta;
-            tab.push_back(seg1.S2+r*seg1.n);
+            sommet S1=seg1.S2+r*seg1.n;
+            if (distance_pt_polygone(P,S1)>(r-EPSILON)) tab.push_back(S1);
             if (debug) cout<<"on push_back le point"<<seg1.S2+r*seg1.n<<endl;
             for(unsigned int j=1; j<n-1; j++)
             {
@@ -113,11 +138,12 @@ void padding_sommet(segment seg1, segment seg2, vector<sommet> & tab, double r, 
                 if(seg1.n.pts[1]<0){theta=-theta;};
                 S=rotation_d2(S,theta);
                 S=translation(seg2.S1,S);
-                tab.push_back(S);
+                if (distance_pt_polygone(P,S)>(r-EPSILON)) tab.push_back(S);
                 if (debug) cout<<"on push_back le point"<<S<<endl;
             };
-            tab.push_back(seg2.S1+r*seg2.n);
-            if (debug) cout<<"on push_back le point"<<seg2.S1+r*seg2.n<<endl;
+            sommet S=seg2.S1+r*seg2.n;
+            if (distance_pt_polygone(P,S)>(r-EPSILON))  tab.push_back(S);
+            if (debug) cout<<"on push_back le point"<<S<<endl;
         }
         return ;
 };
@@ -201,10 +227,10 @@ polygone  padding_cercle(const polygone& P, double r, unsigned int n)
     for(int i=1; i<P.nb_sommet; i++)
     {
         seg2=P.segments[i];
-        padding_sommet(seg1,seg2,tab,r,n);
+        padding_sommet(P, seg1, seg2, tab, r, n);
         seg1=seg2;
     };
-    padding_sommet(seg1,P.segments[0],tab,r,n);
+    padding_sommet(P, seg1,P.segments[0],tab,r,n);
     polygone pad(tab);
     return pad;
 };
