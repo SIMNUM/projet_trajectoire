@@ -235,7 +235,7 @@ double norm (const vecteur & v){
 }
 
 double det_d2(const vecteur & v1, const vecteur & v2){
-    return (v1.pts[0]*v2.pts[1]-v1.pts[1]*v2.pts[2]);
+    return (v1.pts[0]*v2.pts[1]-v1.pts[1]*v2.pts[0]);
 }
 
 vecteur rotation_d2 (const vecteur& v, double theta){
@@ -267,6 +267,13 @@ sommet dillatation (const sommet& centre, const sommet& s,double dill){
     res = translation(v, centre);
     return res;
 };
+
+double maxim(double a,double b){
+    if (a>=b) {
+        return a;
+    }
+    else return b;
+}
 
 
 /* FONCTIONS DE LA CLASSE SEGMENT */

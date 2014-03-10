@@ -92,7 +92,17 @@ bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i
     if (i==s) return true;
     vecteur SI(p.sommets[s],p.sommets[i]);
     int n = p.nb_sommet;
-    return((!intersection_totale(scn, p.sommets[s],numpol,s,p.sommets[i],numpol,i))&&((ps(SI, vecteur(p.segments[(s-1+n)%n].n))>-EPSILON)||((ps(SI, vecteur(p.segments[s].n))>-EPSILON))));
+    if (det_d2(p.segments[(s-1+n)%n].n, p.segments[s].n)>0) {
+        return(!intersection_totale(scn, p.sommets[s],numpol,s,p.sommets[i],numpol,i)
+               &&((ps(SI, p.segments[(s-1+n)%n].n)>-EPSILON)
+                  ||(ps(SI, p.segments[s].n)>-EPSILON))); // Cas convexe
+    }
+    else {
+        return(!intersection_totale(scn, p.sommets[s],numpol,s,p.sommets[i],numpol,i)
+               &&((ps(SI, p.segments[(s-1+n)%n].n)>-EPSILON)
+                  &&(ps(SI, p.segments[s].n)>-EPSILON))); // Cas non convexe
+    }
+    
     
 }
 
@@ -106,9 +116,16 @@ bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,co
         return (!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i));
     }
     else{
-    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)
-        &&((ps(SI, vecteur(scn.obstacles[s_o].segments[((s_p-1+n)%n)].n))>-EPSILON)
-        &&((ps(SI, vecteur(scn.obstacles[s_o].segments[s_p].n))>-EPSILON))));
+        if (det_d2(scn.obstacles[s_o].segments[(s_p-1+n)%n].n, scn.obstacles[s_o].segments[s_p].n)>0) {
+            return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)
+                   &&((ps(SI, scn.obstacles[s_o].segments[((s_p-1+n)%n)].n)>-EPSILON)
+                      ||(ps(SI, scn.obstacles[s_o].segments[s_p].n)>-EPSILON))); // Cas convexe
+        }
+        else {
+            return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)
+                   &&((ps(SI, scn.obstacles[s_o].segments[((s_p-1+n)%n)].n)>-EPSILON)
+                      &&(ps(SI, scn.obstacles[s_o].segments[s_p].n)>-EPSILON))); // Cas non convexe
+        }
     }
 }
 
@@ -153,42 +170,48 @@ graphe::graphe(const scene& scn){
     for (int k=0; k<scn.nb_obstacle; k++) {
         for (int l=0; l<scn.obstacles[k].nb_sommet; l++) {
             int positioninter = position;
-            dist[positioninter+l][positioninter+l]=0;
+            dist[position+l][position+l]=0;
             // Replissage de sois même
-            for (int j=l+1; j<scn.obstacles[k].nb_sommet; j++) {
+            for (int j=0; j<scn.obstacles[k].nb_sommet; j++) {
                 if (accessible_sur_soimeme(scn, scn.obstacles[k],k, j, l)) {
-                    dist[position+l][positioninter+j]=norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[k].sommets[j]));
-                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                    dist[position+l][position+j]=maxim(norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[k].sommets[j])),dist[position+j][position+l]);
+                    dist[position+j][position+l]=dist[position+l][position+j];
                 }
                 else{
-                    dist[position+l][positioninter+j]=MaxInt;
-                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                    dist[position+l][position+j]=MaxInt;
+                    dist[position+j][position+l]=dist[position+l][position+j];
                 };
             }
             // Remplissage du reste
-            positioninter += scn.obstacles[k].nb_sommet;
-            for (int i=k+1; i<scn.nb_obstacle; i++){
-                for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
-                if (accessible_sur_autre(scn, scn.obstacles[i],i, j, scn.obstacles[k].sommets[l],k,l)) {
-                    dist[position+l][positioninter+j]=norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[i].sommets[j]));
-                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+            positioninter =1;
+            for (int i=0; i<scn.nb_obstacle; i++){
+                if (i!=k) {
+                    for (int j=0; j<scn.obstacles[i].nb_sommet; j++) {
+                        if (accessible_sur_autre(scn, scn.obstacles[i],i, j, scn.obstacles[k].sommets[l],k,l)) {
+                            dist[position+l][positioninter+j]=maxim(norm(vecteur(scn.obstacles[k].sommets[l], scn.obstacles[i].sommets[j])),dist[positioninter+j][position+l]);
+                            dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                        }
+                        else {
+                            dist[position+l][positioninter+j]=MaxInt;
+                            dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                        }
+                    }
+                    positioninter +=scn.obstacles[i].nb_sommet;
                 }
-                else {
-                    dist[position+l][positioninter+j]=MaxInt;
-                    dist[positioninter+j][position+l]=dist[position+l][positioninter+j];
+                else{
+                    positioninter +=scn.obstacles[i].nb_sommet;
                 }
-            }
-            positioninter +=scn.obstacles[i].nb_sommet;
             }
             // Remplissage du dernier point (Point d'arrivée)
             if (!intersection_totale(scn, scn.obstacles[k].sommets[l],k,l, scn.objectif,-1,-1)) {
-                dist[position+l][dim-1] = norm(vecteur(scn.obstacles[k].sommets[l], scn.objectif));
+                dist[position+l][dim-1] = maxim(norm(vecteur(scn.obstacles[k].sommets[l], scn.objectif)),dist[dim-1][position+l]);
                 dist[dim-1][position+l] =dist[position+l][dim-1];
             }
             else{
                 dist[position+l][dim-1] = MaxInt;
-                dist[dim-1][position+l] =dist[position+l][dim-1];
+                dist[dim-1][position+l] = dist[position+l][dim-1];
             }
+            
             
         }
         position +=scn.obstacles[k].nb_sommet;
@@ -207,6 +230,7 @@ void calcule_chemin (const graphe& graph, int* solution ){
         longueur[i] = graph.dist[0][i];
         solution[i] = 0;
     }
+    solution[graph.dim-1]=123456789;
     
     // On initialise deux ensembles de sommets S et T
     bool* S=new bool[graph.dim];
@@ -224,13 +248,18 @@ void calcule_chemin (const graphe& graph, int* solution ){
         T[i] = false; S[i] = true;
         for (int j=0; j<graph.dim; j++) {
             if (j!=i) {
-                if (longueur[j]>(longueur[i]+graph.dist[i][j])) {
+                if ((longueur[j]>(longueur[i]+graph.dist[i][j]))) {
                     longueur[j] =longueur[i]+graph.dist[i][j];
                     solution[j]=i;
                 }
             }
         }
     }
+    if (solution[graph.dim-1]==123456789) {
+        std::cout << "ATTENTION, PAS DE SOLUTION \n";
+        solution[graph.dim-1]=graph.dim-1;
+    }
+    
 
 }
 
@@ -329,14 +358,20 @@ void calcule_le_plus_court_chemin (scene& scn, string titre){
 void calcule_le_plus_court_chemin_padding_cercle (scene scn, string titre,double rayon){
     
     // On exporte
-    //scn.exporte(titre);
+    scn.exporte(titre);
     
     // On padding
     for (int i=0; i<scn.nb_obstacle; i++) {
-        scn.obstacles[i]= padding_cercle(scn.obstacles[i], rayon);
+        scn.obstacles[i]= padding_cercle(scn.obstacles[i], rayon,4);
+        //scn.obstacles[i]= padding_rectangle(scn.obstacles[i], vecteur(0,1), vecteur(2,0));
+        
     }
     
-    scn.exporte(titre);
+//    for (int j =0; j<scn.obstacles[1].nb_sommet; j++) {
+//        std::cout << "n " << j << " = " << scn.obstacles[1].segments[j].n <<"\n";
+//    }
+    
+    //scn.exporte(titre);
     graphe G(scn);
     int* sol = new int[G.dim];
     calcule_chemin(G, sol);

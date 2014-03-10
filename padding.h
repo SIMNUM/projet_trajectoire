@@ -6,7 +6,7 @@
 
 #include "scene.h"
 
-#define debug true
+#define debug false
 
 //quelques fonctions utiles
 int sign(const double& x);

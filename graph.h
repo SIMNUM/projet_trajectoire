@@ -18,7 +18,7 @@
 using namespace std;
 
 
-const double MaxInt = 1E+37;
+const double MaxInt = 1E+32;
 
 class graphe {
 public:
