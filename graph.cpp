@@ -102,7 +102,14 @@ bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i
 bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_o,int s_p){
     vecteur SI(s,p.sommets[i]);
     int n = scn.obstacles[s_o].nb_sommet;
-    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)&&((ps(SI, vecteur(scn.obstacles[s_o].segments[(s-1+n)%n].n))>-EPSILON)||((ps(SI, vecteur(scn.obstacles[s_o].segments[s].n))>-EPSILON))));
+    if (s_o<0||s_p<0) {
+        return (!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i));
+    }
+    else{
+    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)
+        &&((ps(SI, vecteur(scn.obstacles[s_o].segments[((s_p-1+n)%n)].n))>-EPSILON)
+        &&((ps(SI, vecteur(scn.obstacles[s_o].segments[s_p].n))>-EPSILON))));
+    }
 }
 
 
@@ -322,13 +329,14 @@ void calcule_le_plus_court_chemin (scene& scn, string titre){
 void calcule_le_plus_court_chemin_padding_cercle (scene scn, string titre,double rayon){
     
     // On exporte
-    scn.exporte(titre);
+    //scn.exporte(titre);
     
     // On padding
     for (int i=0; i<scn.nb_obstacle; i++) {
         scn.obstacles[i]= padding_cercle(scn.obstacles[i], rayon);
     }
     
+    scn.exporte(titre);
     graphe G(scn);
     int* sol = new int[G.dim];
     calcule_chemin(G, sol);
