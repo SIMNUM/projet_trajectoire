@@ -100,7 +100,9 @@ bool accessible_sur_soimeme(const scene& scn, const polygone& p,int numpol,int i
 // Ca permet d'éviter que deux polygones ne se recoupent. Et que ça merde en conséquent.
 
 bool accessible_sur_autre(const scene& scn,const polygone& p,int numpol,int i,const sommet s,int s_o,int s_p){
-    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i));
+    vecteur SI(s,p.sommets[i]);
+    int n = scn.obstacles[s_o].nb_sommet;
+    return(!intersection_totale(scn,s,s_o,s_p,p.sommets[i],numpol,i)&&((ps(SI, vecteur(scn.obstacles[s_o].segments[(s-1+n)%n].n))>-EPSILON)||((ps(SI, vecteur(scn.obstacles[s_o].segments[s].n))>-EPSILON))));
 }
 
 
